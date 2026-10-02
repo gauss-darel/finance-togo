@@ -1,0 +1,226 @@
+CREATE DATABASE IF NOT EXISTS marche_togo CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE marche_togo;
+
+DROP TABLE IF EXISTS lignes_commande;
+DROP TABLE IF EXISTS commandes;
+DROP TABLE IF EXISTS produits;
+DROP TABLE IF EXISTS clients;
+
+CREATE TABLE clients (
+  id_client INT generated always as identity PRIMARY KEY,
+  nom_complet VARCHAR(100) NOT NULL,
+  ville VARCHAR(60) NOT NULL,
+  telephone VARCHAR(20),
+  date_inscription DATE NOT NULL
+);
+
+
+CREATE TABLE produits (
+  id_produit INT generated always as identity PRIMARY KEY,
+  nom_produit VARCHAR(100) NOT NULL,
+  categorie VARCHAR(50) NOT NULL,
+  prix_unitaire DECIMAL(10,2) NOT NULL,
+  stock INT NOT NULL
+);
+
+
+CREATE TABLE commandes (
+  id_commande INT generated always as identity PRIMARY KEY,
+  id_client INT NOT NULL,
+  date_commande DATE NOT NULL,
+  statut VARCHAR(30) NOT NULL,
+  FOREIGN KEY (id_client) REFERENCES clients(id_client)
+);
+
+
+CREATE TABLE lignes_commande (
+  id_ligne INT generated always as identity PRIMARY KEY,
+  id_commande INT NOT NULL,
+  id_produit INT NOT NULL,
+  quantite INT NOT NULL,
+  prix_vente DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (id_commande) REFERENCES commandes(id_commande),
+  FOREIGN KEY (id_produit) REFERENCES produits(id_produit)
+);
+
+
+INSERT INTO clients (nom_complet, ville, telephone, date_inscription) VALUES
+('Ama Mensah','Lomé','+228 90 11 22 01','2025-01-10'),
+('Koffi Agbéko','Kara','+228 91 22 33 02','2025-01-14'),
+('Esi Lawson','Sokodé','+228 92 33 44 03','2025-01-20'),
+('Komlan Adjei','Lomé','+228 93 44 55 04','2025-02-02'),
+('Akouvi Tchalla','Atakpamé','+228 94 55 66 05','2025-02-10'),
+('Yao Kossi','Kpalimé','+228 95 66 77 06','2025-02-18'),
+('Mawuli Agbeko','Tsévié','+228 96 77 88 07','2025-03-01'),
+('Abla Dossou','Lomé','+228 97 88 99 08','2025-03-12'),
+('Kodjo Sename','Aného','+228 98 99 00 09','2025-03-25'),
+('Dédé Kponton','Bassar','+228 90 12 34 10','2025-04-03'),
+('Sena Afi','Kara','+228 91 23 45 11','2025-04-19'),
+('Tétévi Assigbé','Lomé','+228 92 34 56 12','2025-05-05'),
+('Mimi Koudjo','Sokodé','+228 93 45 67 13','2025-05-21'),
+('Edem Tchagnao','Atakpamé','+228 94 56 78 14','2025-06-02'),
+('Fati Ouro','Kpalimé','+228 95 67 89 15','2025-06-17');
+
+
+INSERT INTO produits (nom_produit, categorie, prix_unitaire, stock) VALUES
+('Riz local 5 kg','Céréales',4500,45),('Maïs en sac 5 kg','Céréales',2500,60),
+('Huile de palme 1 L','Huiles',1200,38),('Huile végétale 1 L','Huiles',1500,42),
+('Piment séché 250 g','Épices',800,70),('Tomates fraîches 1 kg','Légumes',700,55),
+('Haricots rouges 1 kg','Légumineuses',1300,40),('Farine de manioc 1 kg','Farines',900,33),
+('Savon local','Hygiène',500,90),('Café du Togo 250 g','Boissons',2200,25),
+('Miel de montagne 500 ml','Épicerie',3000,18),('Ananas pain de sucre','Fruits',600,50),
+('Bananes plantain (régime)','Fruits',1800,28),('Fromage wagashi 500 g','Produits frais',2000,22),
+('Jus de bissap 1 L','Boissons',1000,36);
+
+
+INSERT INTO commandes (id_client, date_commande, statut) VALUES
+(1,'2025-06-20','Livrée'),(2,'2025-06-21','Livrée'),(3,'2025-06-22','En préparation'),
+(4,'2025-06-23','Livrée'),(5,'2025-06-24','Annulée'),(6,'2025-06-25','Livrée'),
+(7,'2025-06-26','En préparation'),(8,'2025-06-27','Livrée'),(9,'2025-06-28','Livrée'),
+(10,'2025-06-29','En préparation'),(11,'2025-06-30','Livrée'),(12,'2025-07-01','Livrée'),
+(13,'2025-07-02','Annulée'),(14,'2025-07-03','Livrée'),(15,'2025-07-04','En préparation');
+
+
+INSERT INTO lignes_commande (id_commande, id_produit, quantite, prix_vente) VALUES
+(1, 1, 2, 4500.00), (1, 3, 1, 1200.00),
+(2, 2, 3, 2500.00), (2, 9, 4, 500.00),
+(3, 6, 5, 700.00), (3, 5, 2, 800.00),
+(4, 10, 1, 2200.00), (4, 11, 1, 3000.00),
+(5, 13, 2, 1800.00),
+(6, 7, 2, 1300.00), (6, 8, 1, 900.00),
+(7, 15, 3, 1000.00), (7, 12, 6, 600.00),
+(8, 4, 2, 1500.00), (8, 14, 1, 2000.00),
+(9, 1, 1, 4500.00), (9, 5, 3, 800.00),
+(10, 3, 2, 1200.00), (10, 6, 4, 700.00),
+(11, 2, 2, 2500.00), (11, 9, 2, 500.00),
+(12, 10, 2, 2200.00), (12, 15, 2, 1000.00),
+(13, 11, 1, 3000.00),
+(14, 13, 3, 1800.00), (14, 7, 1, 1300.00),
+(15, 12, 4, 600.00), (15, 8, 2, 900.00);
+
+/*afficher les commandes avec le nom du client et le statut dela commande*/
+select 'clients' as nom_table, count(*) from clients c
+union ALL
+select 'commandes', count(*) from commandes co
+union ALL
+select 'lignes_commandes' , count(*) from lignes_commande lc
+union ALL
+select 'produits', count(*) from produits p;
+
+/*afficher tout les clients de lomé*/
+
+select * from clients
+ where ville = 'Lomé'
+ order by nom_complet asc;
+
+
+/*afficher les produits dont le prix est inferieur à 1500 du moins cher au plus cher*/
+
+SELECT * from produits WHERE prix_unitaire < 1500
+order BY prix_unitaire ASC;
+
+/*afficher les commandes livres des plus recentes aux plus anciennes*/
+
+select * from commandes WHERE statut = 'Livrée'
+order by date_commande DESC;
+
+/*afficher les produits de categorie 'fruits' ou 'ceréales'*/
+
+SELECT * from produits
+ WHERE categorie IN ('Fruits', 'Céréales');
+
+/*afficher les commandes passées entre le 25 juin et le 3 juillet 2025*/
+
+select * from commandes
+where date_commande between '2025-06-25' and '2025-07-03';
+
+/*compter le nombre de clientes inscrits dans chaque ville*/
+
+select ville, count(*) as nombre_clients from clients
+group by ville
+order by nombre_clients desc;
+
+/*calculer le prix moyen des produirs par categorie */
+
+select categorie, avg(prix_unitaire) as prix_moyen
+from produits
+group by categorie;
+
+/*trouver le prix le plus élevé et le plus bas du catalogue */
+
+select max(prix_unitaire) as prix_max, min(prix_unitaire) as prix_min 
+from produits
+group by categorie;
+
+/*Calcule de la valeur du stock de chaque produit (`prix_unitaire × stock`). Donnez un alias français à la colonne calculée*/
+
+select nom_produit, sum(prix_unitaire*stock) as valeur_stock
+from produits
+group by nom_produit
+
+
+/* compter les commandes selon leur statut*/
+
+select statut, count(*) as nombre_commandes
+from commandes
+group by statut
+order by nombre_commandes desc;
+
+/* afficher les commandes avec le nom du clients et sa ville*/
+
+select co.id_commande, c.nom_complet, c.ville, co.date_commande
+from commandes co
+join clients c on co.id_client = c.id_client
+order by co.date_commande desc;
+
+/*afficher le détail de chaque ligne : commande, produit, quantité et prix de vente*/
+
+select lc.id_ligne, co.id_commande, p.nom_produit, lc.quantite, lc.prix_vente
+from lignes_commande lc
+join commandes co on lc.id_commande = co.id_commande
+join produits p on lc.id_produit = p.id_produit
+order by co.date_commande desc;
+
+/*Calcule du  le total de chaque commande (`quantite × prix_vente`)*/
+
+select co.id_commande, sum(quantite * prix_vente) as total_commande
+from lignes_commande lc
+join commandes co on lc.id_commande = co.id_commande
+group by co.id_commande
+ ORDER BY total_commande desc;
+
+ /* calcule de chiffre d'affaires total des commandes livrées uniquement*/
+
+ /*Trouvez les produits les plus vendus en quantité*/
+
+ select p.nom_produit, sum(lc.quantite) as total_quantite
+ from lignes_commande lc
+    join produits p on lc.id_produit = p.id_produit
+    group by p.nom_produit
+    order by total_quantite desc
+    limit 5;
+
+ /*Trouvez le montant total dépensé par chaque client, du plus grand au plus petit*/
+
+ select c.nom_complet, sum(lc.quantite * lc.prix_vente) as total_dépensé
+ from clients c
+ left join commandes co on c.id_client = co.id_client
+ left join lignes_commande lc on co.id_commande = lc.id_commande
+ group by c.nom_complet
+ order by total_dépensé desc;
+
+ /*Affichez les commandes dont le total dépasse 5 000 FCFA*/
+
+ select co.id_commande, sum(lc.quantite * lc.prix_vente) as total_commande
+ from lignes_commande lc
+ join commandes co on lc.id_commande = co.id_commande
+ group by co.id_commande
+ having sum(lc.quantite * lc.prix_vente) > 5000
+ order by total_commande desc;
+
+/*nombre moyen d'articles par commande (Additionnez les quantités par commande, puis calculez la moyenne*/
+
+select co.id_commande, avg(lc.quantite) as moyenne_quantite
+from lignes_commande lc
+join commandes co on lc.id_commande = co.id_commande
+group by co.id_commande;
